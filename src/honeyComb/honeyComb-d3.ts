@@ -10,8 +10,9 @@ import {
 } from "d3";
 import { hexbin as d3Hexbin } from "d3-hexbin";
 // import { zoom as d3Zoom } from "d3-zoom";
-import { bestFitElemCountPerRow } from "./honeyComb-utils";
+import { bestFitElemCountPerRow, getTooltipContent } from "./honeyComb-utils";
 import { getColorValue } from "./honeyComb-utils";
+import styles from "./honeyComb.module.css";
 
 function getPlaceHolderElems(rows, columns, len, radius) {
   let points = [];
@@ -26,7 +27,7 @@ function getPlaceHolderElems(rows, columns, len, radius) {
 // Define the div for the tooltip
 const div = select("body")
   .append("div")
-  .attr("class", "tooltip")
+  .attr("class", `tooltip ${styles.tooltip}`)
   .style("opacity", 0);
 
 function renderHoneyComb(data, index, { width, height, x, y, colorDimension }) {
@@ -92,9 +93,7 @@ function renderHoneyComb(data, index, { width, height, x, y, colorDimension }) {
       return "M" + d.x + "," + d.y + zeroHexBin.hexagon();
     })
     .on("mouseover", function(d, i) {
-      const content = `meta = ${JSON.stringify(data[i].metaData.data)} value=${
-        data[i].aggregateInfo[colorDimension]
-      }`;
+      const content = getTooltipContent(data[i], colorDimension);
       div
         .transition()
         .duration(200)

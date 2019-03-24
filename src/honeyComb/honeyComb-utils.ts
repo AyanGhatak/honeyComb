@@ -1,4 +1,4 @@
-import { values, groupBy } from "lodash";
+import { values, groupBy, omit, reduce } from "lodash";
 
 export function bucketizeData(
   visualData,
@@ -44,4 +44,18 @@ export function bestFitElemCountPerRow(bucketLen, width, height) {
     }
   }
   return countPerRow;
+}
+
+export function getTooltipContent({ metaData, aggregateInfo }, colorDimension) {
+  const metaStr = reduce(
+    omit(metaData.data, ["source", "metric"]),
+    (accum, value, key) => {
+      accum += `${key}=${value}<br/>`;
+      return accum;
+    },
+    ""
+  );
+  return `${metaStr} <br/> ${colorDimension}=<b>${
+    aggregateInfo[colorDimension]
+  }</b>`;
 }
