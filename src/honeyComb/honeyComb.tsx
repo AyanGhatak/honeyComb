@@ -2,7 +2,7 @@ import * as React from "react";
 import styles from "./honeyComb.module.css";
 import { useEffect, useRef, FunctionComponent } from "react";
 import { bucketizeData } from "./honeyComb-utils";
-import { CPU_Usage } from "../data/CPU_Usage";
+import { CPU_Usage, Deployment_Data } from "../data";
 import { renderFn, updateZoomRect } from "./honeyComb-d3";
 
 interface HoneyCombProps {
@@ -18,7 +18,12 @@ export const HoneyComb: FunctionComponent<HoneyCombProps> = props => {
   useEffect(() => {
     // TODO: Remove the any type below.
     const { width, height } = (svgEl.current as any).getBoundingClientRect();
-    var buckets = bucketizeData(CPU_Usage, props.bucketKeys);
+    var buckets = bucketizeData(
+      Deployment_Data,
+      // Deployment_Data.splice(0, 10),
+      props.bucketKeys
+    );
+    console.log(props.bucketKeys, buckets);
     const renderProps = {
       width,
       height,
@@ -29,8 +34,8 @@ export const HoneyComb: FunctionComponent<HoneyCombProps> = props => {
   });
   return (
     <svg className={styles.svg} ref={svgEl}>
-      <g ref={groupEl} />
       <rect ref={zoomEl} />
+      <g ref={groupEl} />
     </svg>
   );
 };

@@ -23,6 +23,12 @@ function getPlaceHolderElems(rows, columns, len, radius) {
   return points;
 }
 
+// Define the div for the tooltip
+const div = select("body")
+  .append("div")
+  .attr("class", "tooltip")
+  .style("opacity", 0);
+
 function renderHoneyComb(data, index, { width, height, x, y, colorDimension }) {
   function getColors(d, i) {
     var value = data[i].aggregateInfo[colorDimension];
@@ -30,7 +36,7 @@ function renderHoneyComb(data, index, { width, height, x, y, colorDimension }) {
   }
 
   const svgGroup = select(this);
-  const t = transition().duration(1000);
+  const t = transition().duration(750);
 
   const MapColumns = Math.ceil(
     data.length / Math.floor(Math.sqrt(data.length))
@@ -41,7 +47,8 @@ function renderHoneyComb(data, index, { width, height, x, y, colorDimension }) {
   const hexRadius = Math.floor(
     min([
       width / ((MapColumns + 0.5) * Math.sqrt(3)),
-      height / ((MapRows + 1 / 3) * 1.5)
+      height / ((MapRows + 1 / 3) * 1.5),
+      width / 7
     ])
   );
 
@@ -83,6 +90,25 @@ function renderHoneyComb(data, index, { width, height, x, y, colorDimension }) {
     .attr("class", "hexagon")
     .attr("d", function(d) {
       return "M" + d.x + "," + d.y + zeroHexBin.hexagon();
+    })
+    .on("mouseover", function(d, i) {
+      const content = `meta = ${JSON.stringify(data[i].metaData.data)} value=${
+        data[i].aggregateInfo[colorDimension]
+      }`;
+      div
+        .transition()
+        .duration(200)
+        .style("opacity", 0.9);
+      div
+        .html(content)
+        .style("left", event.pageX + "px")
+        .style("top", event.pageY - 28 + "px");
+    })
+    .on("mouseout", function(d) {
+      div
+        .transition()
+        .duration(500)
+        .style("opacity", 0);
     })
     .attr("stroke", "white")
     .attr("stroke-width", "1px")

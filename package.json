@@ -1,7 +1,7 @@
 {
   "name": "honeycomb-visualisation",
   "version": "1.0.0",
-  "description": "",
+  "description": "Visualise timeseries data as honeycombs",
   "keywords": [],
   "main": "src/index.tsx",
   "dependencies": {

@@ -6,6 +6,7 @@ export function bucketizeData(
   selectedBucketIdx = 0,
   accum = []
 ) {
+  debugger;
   const selectedBucketKey = bucketKeys[selectedBucketIdx];
   const selectedValues = values(
     groupBy(visualData, ({ metaData: { data } }) => data[selectedBucketKey])
